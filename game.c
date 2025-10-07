@@ -1,6 +1,22 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include "game.h"
+
+// The array with a selection of 10 words for the game.
+
+const char* arrayWithWords[10] =
+{
+    "TRYHARD", "CLOWN", "RESILIENCE", "SUSTAINABILITY","WHISPER",
+    "QUIRK", "SYMPHONY", "PONDER", "RESPOND", "BARGAIN"
+};
+
+// A function to get a random word inside this array
+
+const char* getRandomWord(){
+    int randomNumber = rand() % 10;
+    return arrayWithWords[randomNumber];
+}
 
 // to calculate the size of the word
 int wordSize(char secretWord[])
@@ -42,12 +58,20 @@ char readCharacter()
 {
     char character = 0;
 
-    character = getchar();
+    do {
+        character = getchar();
+
+        while (getchar() != '\n');
+        if (!isalpha(character)) {
+            printf("Please enter a valid letter (A-Z):");
+        }
+    }
+    while (!isalpha(character));
+
     character = toupper(character);
-
-    while (getchar() != '\n') ;
-
     return character;
+
+
 }
 
 //to found the letter
@@ -68,4 +92,36 @@ int searchLetter(char userLetter, char secretWord[], int* foundLetter)
     }
 
     return goodLetter;
+}
+
+// to write all the letters proposed by the player.
+
+void writeProposedLetter(char userLetter, char lettersArray[])
+{
+    int alreadyProposed = 0;
+    int i;
+
+    for (i = 0; i < 26; i++) {
+        if (lettersArray[i] == userLetter) {
+            alreadyProposed = 1;
+            break;
+        }
+    }
+
+    if (!alreadyProposed) {
+        for (i = 0; i < 26; i++) {
+            if (lettersArray[i] == '\0') {
+                lettersArray[i] = userLetter;
+                break;
+            }
+        }
+    }
+
+    printf("\nThe letters you already proposed are : ");
+    for (int i = 0; i < 26; i++) {
+        if (lettersArray[i] != '\0') {
+            printf("%c ", lettersArray[i]);
+        }
+    }
+    printf("\n");
 }
